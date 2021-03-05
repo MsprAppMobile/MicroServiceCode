@@ -90,7 +90,7 @@ def single_code(id):
         conn.close()
         return "Code with the id {} has been deleted".format(id),200
 
-@code_api.route('/code/<int:identifiant_QRCode',methods=['GET'])
+@code_api.route('/code/<int:identifiant_QRCode>',methods=['GET'])
 def code_by_qrCode(identifiant_QRCode) :
     conn = connection.db_connection()
     cursor = conn.cursor()
