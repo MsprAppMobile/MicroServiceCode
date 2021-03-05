@@ -1,3 +1,2 @@
-.Api/__pycache__
-.Database/__pycache__
-.mspr_env
+mspr_env
+*__pycache__
