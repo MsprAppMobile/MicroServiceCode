@@ -1,4 +1,3 @@
-import mariadb
 import connection
 
 conn = connection.db_connection()
@@ -18,7 +17,8 @@ sql_code= """CREATE table code (
     image VARCHAR(300) NOT NULL,
     description TEXT NOT NULL,
     identifiant_QRCode VARCHAR(200) NOT NULL,
-    is_unique BOOLEAN NOT NULL);"""
+    is_unique BOOLEAN NOT NULL,
+    category VARCHAR(300) NOT NULL);"""
 
 sql_user = """ CREATE table `user` (
     id INT PRIMARY KEY AUTO_INCREMENT,
