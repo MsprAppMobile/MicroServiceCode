@@ -1,8 +1,14 @@
-import mariadb
+import mysql.connector
 
 def db_connection():
     conn = None
-    try : conn = mariadb.connect(user='baptistebrs', password='test', host='127.0.0.1',database='GoStyle')
-    except mariadb.Error as e:
-        print('erreur')
+    
+    db_user = os.getenv('DB_USER')
+    db_password = os.getenv('DB_PASSWORD')
+    db_host = os.getenv('DB_HOST')
+    db_database = os.getenv('DB_DATABASE')
+
+    try : conn = mysql.connector.connect(user= db_user, password= db_password, host= db_host,database= db_database)
+    except mysql.connector.Error:
+        print("Can't connect to db")
     return conn

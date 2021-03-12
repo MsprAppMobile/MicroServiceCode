@@ -1,6 +1,6 @@
 from flask import Flask
-from Api.CodeApi import code_api
-from Api.CodeLIstApi import codelist_api
+from Router.CodeApi import code_api
+from Router.CodeLIstApi import codelist_api
 
 app=Flask(__name__)
 
