@@ -19,7 +19,8 @@ def codes() :
             if codes is not None :
                 cursor.close()
                 conn.close()
-                return jsonify(codes)
+                return jsonify(codes),200
+                
         if request.method=='POST':
             data = request.get_json()
             new_name = data['name']
@@ -28,12 +29,22 @@ def codes() :
             new_description = data['description']
             new_identifiantQRCode = data['identifiant_QRCode']
             new_is_unique = data['is_unique']
-            sql = """INSERT INTO code (name,expiration_date,image,description,identifiant_QRCode,is_unique) VALUES (?,?,?,?,?,?) """
-            cursor.execute(sql,(new_name,new_expiration_date,new_image,new_description,new_identifiantQRCode,new_is_unique))
+            new_category = data['category']
+            sql = """INSERT INTO code (name,expiration_date,image,description,identifiant_QRCode,is_unique,category) VALUES (%s,%s,%s,%s,%s,%s,%s) """
+            cursor.execute(sql,(new_name,new_expiration_date,new_image,new_description,new_identifiantQRCode,new_is_unique,new_category))
+            created_code = {
+                'name' : new_name,
+                'expiration_date' : new_expiration_date,
+                'image' : new_image,
+                'description':new_description,
+                'identifiant_QRCode':new_identifiantQRCode,
+                'is_unique' :new_is_unique,
+                'catgeory' : new_category
+            }
             conn.commit()
             cursor.close()
             conn.close()
-            return f"Code with the id {cursor.lastrowid} created successful"
+            return jsonify(created_code),201
     else :
         return "Your token is expired"
 
@@ -45,7 +56,7 @@ def single_code(id):
         cursor = conn.cursor()
         code = None
         if request.method == 'GET':
-            cursor.execute("SELECT * FROM code WHERE id =?",(int(id),))
+            cursor.execute("SELECT * FROM code WHERE id =%s",(int(id),))
             rows = cursor.fetchall()
             for r in rows :
                 code = r
@@ -56,17 +67,18 @@ def single_code(id):
             else :
                 cursor.close()
                 conn.close()
-                return "Something wrong",404
+                return "Bad user id",400
 
         if request.method == 'PUT' :
             sql = """UPDATE code
-                    SET name = ?,
-                        expiration_date=?,
-                        image=?,
-                        description=?,
-                        identifiant_QRCode=?,
-                        is_unique =?
-                    WHERE id=? """
+                    SET name = %s,
+                        expiration_date=%s,
+                        image=%s,
+                        description=%s,
+                        identifiant_QRCode=%s,
+                        is_unique =%s,
+                        category = %s
+                    WHERE id=%s """
             data = request.get_json()
             name= data["name"]
             expiration_date = data["expiration_date"]
@@ -74,6 +86,7 @@ def single_code(id):
             description = data["description"]
             identifiant_QRCode = data["identifiant_QRCode"]
             is_unique = data["is_unique"]
+            category = data['category']
             updated_code = {
                 'id':id,
                 'name' : name,
@@ -81,21 +94,22 @@ def single_code(id):
                 'image' : image,
                 'description':description,
                 'identifiant_QRCode':identifiant_QRCode,
-                'is_unique' :is_unique
+                'is_unique' :is_unique,
+                'category' :category
             }
-            cursor.execute(sql,(name,expiration_date,image,description,identifiant_QRCode,is_unique,int(id)))
+            cursor.execute(sql,(name,expiration_date,image,description,identifiant_QRCode,is_unique,category,int(id)))
             conn.commit()
             cursor.close()
             conn.close()
             return jsonify(updated_code)
 
         if request.method == 'DELETE':
-            sql = """ DELETE FROM code WHERE id=? """
+            sql = """ DELETE FROM code WHERE id=%s """
             cursor.execute(sql,(int(id),))
             conn.commit()
             cursor.close()
             conn.close()
-            return "Code with the id {} has been deleted".format(id),200
+            return id,200
     else :
         return "Your token is expired"
 

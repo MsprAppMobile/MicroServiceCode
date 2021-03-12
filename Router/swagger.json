@@ -1,0 +1,420 @@
+{
+    "openapi":"3.0.0",
+    "info" :{
+        "description":"Swagger documentation of our CodeApi. <br> All of our functionnalities cannot work without a token from our other microservice User.",
+        "version":"1.0.0",
+        "title":"CodeApi GoStyle",
+        "contact":{
+            "email" : "..."
+        }
+    },
+    "servers" :[
+        {
+            "url" : "/"
+        }
+    ],
+    "tags" :[
+        {
+            "name" : "Code Request",
+            "description" : "Code Api request"
+        },
+        {
+            "name" : "CodeList Request",
+            "description" : "List of code Api request"
+        }
+    ],
+    "paths" : {
+        "/codes" :{
+            "get" :{
+                "tags" :[
+                    "Code Request"
+                ],
+                "summary" : "Return all codes",
+                "responses" : {
+                    "200" :{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/codeRequest"
+                        }
+                    }
+                }
+            },
+            "post" :{
+                "tags" :[
+                    "Code Request"
+                ],
+                "summary" : "Create a new code in the database",
+                "requestBody":{
+                    "decription":"Code Request Object",
+                    "required" : true,
+                    "content" : {
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/codeRequest"
+                            }
+                        }
+                    }
+                },
+                "produces" : [
+                    "application/json"
+                ],
+                "responses":{
+                    "201":{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/codeRequest"
+                        }
+                    }
+                },
+                "500" :{
+                    "description" : "Failed. Erreur Serveur"
+                }
+            }
+        },
+        "/code/{id}" :{
+            "parameters" :[
+                {
+                    "name":"id",
+                    "in":"path",
+                    "required":true,
+                    "decription": "ID of the beer",
+                    "type":"integer"
+                }
+            ],
+            "get" : {
+                "tags" :[
+                    "Code Request"
+                ],
+                "summary" : "Get code with given ID",
+                "parameters" :[
+                    {
+                        "name":"id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the code",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "200" :{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/codeRequest"
+                        }
+                    },
+                    "400":{
+                        "decription" : "Failed. Code id not correct"
+                    }
+                }
+            },
+            "put" : {
+                "tags" :[
+                    "Code Request"
+                ],
+                "summary" : "Update code with given ID",
+                "parameters" :[
+                    {
+                        "name":"id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the code",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    }
+                ],
+                "requestBody":{
+                    "decription":"Code Request Object",
+                    "required" : true,
+                    "content" : {
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/codeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses" : {
+                    "200" :{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/codeRequest"
+                        }
+                    },
+                    "400":{
+                        "decription" : "Failed. Code id not correct"
+                    }
+                }
+            },
+            "delete" : {
+                "tags" :[
+                    "Code Request"
+                ],
+                "summary" : "Delete code with given ID",
+                "parameters" :[
+                    {
+                        "name":"id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the code",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "200" :{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    },
+                    "400":{
+                        "decription" : "Failed. Code id not correct"
+                    }
+                }
+            }
+        },
+        "/list" :{
+            "post" :{
+                "tags" :[
+                    "CodeList Request"
+                ],
+                "summary" : "Add a code in the list of the user",
+                "requestBody":{
+                    "decription":"Beer Request Object",
+                    "required" : true,
+                    "content" : {
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/listRequest"
+                            }
+                        }
+                    }
+                },
+                "produces" : [
+                    "application/json"
+                ],
+                "responses":{
+                    "200":{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/listRequest"
+                        }
+                    }
+                },
+                "400" :{
+                    "description" : "Failed. Bad post data"
+                }
+            }
+        },
+        "/list/{user_id}" :{
+            "parameters" :[
+                {
+                    "name":"id",
+                    "in":"path",
+                    "required":true,
+                    "decription": "ID of the user",
+                    "type":"integer"
+                }
+            ],
+            "get" : {
+                "tags" :[
+                    "CodeList Request"
+                ],
+                "summary" : "Get list for the user with given ID",
+                "parameters" :[
+                    {
+                        "name":"id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the user",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "200" :{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/listResponse"
+                        }
+                    },
+                    "400":{
+                        "decription" : "Failed. Beer id not correct"
+                    }
+                }
+            }
+        },
+        "/list/{code_id}/{user_id}" :{
+            "put" : {
+                "tags" :[
+                    "CodeList Request"
+                ],
+                "summary" : "Update stockage for the user with the given id and beer with the other given id ",
+                "parameters" :[
+                    {
+                        "name":"code_id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the code",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    },
+                    {
+                        "name":"user_id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the user",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    }
+                ],
+                "requestBody":{
+                    "decription":"ListCode Request Object",
+                    "required" : true,
+                    "content" : {
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/status"
+                            }
+                        }
+                    }
+                },
+                "responses" : {
+                    "200" :{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/listResponse"
+                        }
+                    },
+                    "400":{
+                        "decription" : "Failed. Code id not correct"
+                    }
+                }
+            },
+            "delete" : {
+                "tags" :[
+                    "CodeList Request"
+                ],
+                "summary" : "Remove the given code from the list of the given user",
+                "parameters" :[
+                    {
+                        "name":"code_id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the code",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    },
+                    {
+                        "name":"user_id",
+                        "in":"path",
+                        "required":true,
+                        "decription": "ID of the user",
+                        "schema":{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "200" :{
+                        "description" : "OK",
+                        "schema" :{
+                            "$ref":"#/components/schemas/id"
+                        }
+                    },
+                    "400":{
+                        "decription" : "Failed. Beer id not correct"
+                    }
+                }
+            }
+        }
+    },
+    "components":{
+        "schemas":{
+            "id" :{
+                "properties" :{
+                    "id" :{
+                        "type" : "integer"
+                    }
+                }
+            },
+            "status":{
+                "properties":{
+                    "status":{
+                        "type":"boolean"
+                    }
+                }
+            },
+            "codeRequest" :{
+                "type" : "object",
+                "properties" :{
+                    "name" :{
+                        "type" : "string",
+                        "format" :"string" 
+                    },
+                    "expiration_date" :{
+                        "type" : "datetime",
+                        "format" : "datetime"
+                    },
+                    "image" : {
+                        "type" : "string",
+                        "format" : "string"
+                    },
+                    "description" : {
+                        "type" : "integer",
+                        "format" : "integer"
+                    },
+                    "identifiant_QRCode" : {
+                        "type" : "string",
+                        "format" : "string"
+                    },
+                    "is_unique":{
+                        "type":"boolean",
+                        "format":"boolean"
+                    },
+                    "catgegory":{
+                        "type":"string",
+                        "format":"string"
+                    }
+                    
+                }
+            },
+            "listResponse" :{
+                "type" :"object",
+                "properties" :{
+                    "code_id" :{
+                        "type" : "integer",
+                        "format" : "integer"
+                    },
+                    "status":{
+                        "type" : "boolean",
+                        "format" : "boolean"
+                    }
+                }
+            },"listRequest":{
+                "type":"object",
+                "properties" :{
+                    "code_id":{
+                        "type" : "integer",
+                        "format" : "integer"
+                    },"user_id" : {
+                        "type" : "integer",
+                        "format" : "integer"
+                    },
+                    "status":{
+                        "type" : "boolean",
+                        "format" : "boolean"
+                    }
+                }
+            }
+        }
+    }
+}

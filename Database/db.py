@@ -22,10 +22,9 @@ sql_code= """CREATE table code (
 
 sql_user = """ CREATE table `user` (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
+    pseudo VARCHAR(100) NOT NULL,
     mail VARCHAR(300) NOT NULL,
-    password VARCHAR(100) NOT NULL,
-    phone INTEGER(10) NOT NULL);"""
+    password VARCHAR(100) NOT NULL);"""
 
 sql_codelist = """CREATE table `codelist` (
     id INT PRIMARY KEY AUTO_INCREMENT,

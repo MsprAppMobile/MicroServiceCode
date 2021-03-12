@@ -11,14 +11,14 @@ def code_by_user(user_id) :
         conn = connection.db_connection()
         cursor= conn.cursor()
         if request.method=='GET' :
-            cursor.execute("SELECT * FROM code WHERE id in (SELECT code_id from codelist where user_id =?)",(int(user_id),))
-            codes = [
-                dict(id=row[0],name = row[1], expiration_date=row[2], image=row[3],description=row[4],identifiant_QRCode=row[5],is_unique = row[6])
+            cursor.execute("SELECT code_id,status from codelist where user_id =%s)",(int(user_id),))
+            list_codes = [
+                dict(code_id=row[0],status = row[1])
                 for row in cursor.fetchall()
             ]
             cursor.close()
             conn.close()
-            return jsonify(codes)
+            return jsonify(list_codes)
     else :
         return "Your token is expired"
 
@@ -33,12 +33,17 @@ def codelist():
             code_id=data['code_id']
             user_id = data['user_id']
             status = data['status']
-            sqllist = """INSERT INTO codelist (code_id,user_id,status) VALUES (?,?,?) """
+            sqllist = """INSERT INTO codelist (code_id,user_id,status) VALUES (%s,%s,%s) """
             cursor.execute(sqllist,(code_id,user_id,status))
+            cerated_item = {
+                'code_id' : code_id,
+                'user_id' : user_id,
+                'status' : status
+            }
             conn.commit()
             cursor.close()
             conn.close()
-            return f"Code {code_id} add to your favlist"
+            return jsonify(cerated_item),200
     else :
         return "Your token is expired"
 
@@ -49,16 +54,16 @@ def list_update(code_id,user_id) :
         conn = connection.db_connection()
         cursor= conn.cursor()
         if request.method=='DELETE' :
-            sqllist = """DELETE FROM codelist where code_id = ? and user_id=? """
+            sqllist = """DELETE FROM codelist where code_id = %s and user_id=%s """
             cursor.execute(sqllist,(int(code_id),int(user_id)))
             conn.commit()
             cursor.close()
             conn.close()
-            return f"Code {code_id} remove from your favlist"
+            return code_id
         if request.method == 'PUT' :
             sql = """UPDATE codelist
                     SET status = ?
-                    WHERE user_id=? and code_id=? """
+                    WHERE user_id=%s and code_id=%s """
             data = request.get_json()
             status = data['status']
             updated_code = {
@@ -70,6 +75,6 @@ def list_update(code_id,user_id) :
             conn.commit()
             cursor.close()
             conn.close()
-            return jsonify(updated_code)
+            return jsonify(updated_code),200
     else :
         return "Your token is expired"
