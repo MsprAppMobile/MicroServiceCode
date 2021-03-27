@@ -1,6 +1,9 @@
 from flask import Blueprint,request,jsonify
 import Database.connection as connection
 from Router.VerifToken import verifyToken
+import qrcode
+import os
+import getpass
 
 code_api = Blueprint('code_api',__name__)
 
@@ -140,3 +143,31 @@ def code_by_qrCode(identifiant_QRCode) :
                 return "Something wrong",404
     else :
         return "Your token is expired"
+
+
+@code_api.route('/saveQrCode/<string:QrCode_Value>',methods=['GET'])
+def saveQrCode(QrCode_Value) :
+    token = request.headers.get('token')
+    if(verifyToken(token)) :
+        conn = connection.db_connection()
+        cursor = conn.cursor()
+        codeName = None
+        if request.method == 'GET':
+            sql =("SELECT name FROM code WHERE identifiant_QRCode =%s")
+            cursor.execute(sql,(QrCode_Value,))
+            rows = cursor.fetchall()
+            for r in rows :
+                codeName = r
+            if codeName is None :
+                cursor.close()
+                conn.close()
+                return "Something wrong",404
+            else :
+                username = getpass.getuser()
+                if(os.path.isdir("/home/"+username+"/Documents/GoStyle") == False):
+                    os.mkdir("/home/"+username+"/Documents/GoStyle")
+                img=qrcode.make(QrCode_Value)
+                img.save("/home/"+username+"/Documents/GoStyle/Datamatrix_"+str(codeName[0])+".png")
+                return "OK",200
+    else :
+        return "Your token is expired",500
