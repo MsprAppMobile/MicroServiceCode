@@ -1,9 +1,11 @@
 from flask import Flask,send_from_directory
+from flask_cors import CORS
 from Router.CodeApi import code_api
 from Router.CodeLIstApi import codelist_api
 from flask_swagger_ui import get_swaggerui_blueprint
 
 app=Flask(__name__)
+CORS(app)
 
 app.register_blueprint(code_api)
 app.register_blueprint(codelist_api)

@@ -13,7 +13,7 @@ def codes() :
         if request.method=='GET':
             cursor.execute("SELECT * FROM code")
             codes = [
-                dict(id=row[0],name = row[1], expiration_date=row[2], image=row[3],description=row[4],identifiant_QRCode=row[5],is_unique = row[6])
+                dict(id=row[0],name = row[1], expiration_date=row[2], image=row[3],description=row[4], value=row[5],identifiant_QRCode=row[6],is_unique = row[7],category=row[8])
                 for row in cursor.fetchall()
             ]
             if codes is not None :
@@ -27,16 +27,18 @@ def codes() :
             new_expiration_date = data['expiration_date']
             new_image = data['image']
             new_description = data['description']
+            new_value = data['value']
             new_identifiantQRCode = data['identifiant_QRCode']
             new_is_unique = data['is_unique']
             new_category = data['category']
-            sql = """INSERT INTO code (name,expiration_date,image,description,identifiant_QRCode,is_unique,category) VALUES (%s,%s,%s,%s,%s,%s,%s) """
-            cursor.execute(sql,(new_name,new_expiration_date,new_image,new_description,new_identifiantQRCode,new_is_unique,new_category))
+            sql = """INSERT INTO code (name,expiration_date,image,description,value,identifiant_QRCode,is_unique,category) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) """
+            cursor.execute(sql,(new_name,new_expiration_date,new_image,new_description,new_value,new_identifiantQRCode,new_is_unique,new_category))
             created_code = {
                 'name' : new_name,
                 'expiration_date' : new_expiration_date,
                 'image' : new_image,
                 'description':new_description,
+                'value':new_value,
                 'identifiant_QRCode':new_identifiantQRCode,
                 'is_unique' :new_is_unique,
                 'catgeory' : new_category
@@ -75,6 +77,7 @@ def single_code(id):
                         expiration_date=%s,
                         image=%s,
                         description=%s,
+                        value=%s,
                         identifiant_QRCode=%s,
                         is_unique =%s,
                         category = %s
@@ -84,6 +87,7 @@ def single_code(id):
             expiration_date = data["expiration_date"]
             image = data["image"]
             description = data["description"]
+            value = data["value"]
             identifiant_QRCode = data["identifiant_QRCode"]
             is_unique = data["is_unique"]
             category = data['category']
@@ -93,11 +97,12 @@ def single_code(id):
                 'expiration_date' : expiration_date,
                 'image' : image,
                 'description':description,
+                'value':value,
                 'identifiant_QRCode':identifiant_QRCode,
                 'is_unique' :is_unique,
                 'category' :category
             }
-            cursor.execute(sql,(name,expiration_date,image,description,identifiant_QRCode,is_unique,category,int(id)))
+            cursor.execute(sql,(name,expiration_date,image,description,value,identifiant_QRCode,is_unique,category,int(id)))
             conn.commit()
             cursor.close()
             conn.close()
@@ -113,7 +118,7 @@ def single_code(id):
     else :
         return "Your token is expired"
 
-@code_api.route('/code/<int:identifiant_QRCode>',methods=['GET'])
+@code_api.route('/code/<string:identifiant_QRCode>',methods=['GET'])
 def code_by_qrCode(identifiant_QRCode) :
     token = request.headers.get('token')
     if(verifyToken(token)) :
@@ -121,7 +126,7 @@ def code_by_qrCode(identifiant_QRCode) :
         cursor = conn.cursor()
         code = None
         if request.method == 'GET':
-            cursor.execute("SELECT * FROM code WHERE identifiant_QRCode =?",(int(identifiant_QRCode),))
+            cursor.execute("SELECT * FROM code WHERE identifiant_QRCode =?",(identifiant_QRCode,))
             rows = cursor.fetchall()
             for r in rows :
                 code = r

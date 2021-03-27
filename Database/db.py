@@ -16,6 +16,7 @@ sql_code= """CREATE table code (
     expiration_date DATETIME NOT NULL,
     image VARCHAR(300) NOT NULL,
     description TEXT NOT NULL,
+    value INT NOT NULL,
     identifiant_QRCode VARCHAR(200) NOT NULL,
     is_unique BOOLEAN NOT NULL,
     category VARCHAR(300) NOT NULL);"""
