@@ -11,14 +11,16 @@ def code_by_user(user_id) :
         conn = connection.db_connection()
         cursor= conn.cursor()
         if request.method=='GET' :
-            cursor.execute("SELECT code_id,status from codelist where user_id =%s)",(int(user_id),))
+            cursor.execute("SELECT code.id, code.name, code.expiration_date, code.image, code.description, code.value, code.identifiant_QRCode, code.is_unique, code.category, codelist.status from code INNER JOIN codelist ON code.id = codelist.code_id where codelist.user_id =%s",(int(user_id),))
             list_codes = [
-                dict(code_id=row[0],status = row[1])
+                dict(id=row[0],name = row[1], expiration_date=row[2], image=row[3],description=row[4], value=row[5],identifiant_QRCode=row[6],is_unique = row[7],category=row[8],status=row[9])
                 for row in cursor.fetchall()
             ]
             cursor.close()
             conn.close()
-            return jsonify(list_codes)
+            return jsonify(list_codes),200
+    else :
+        return "Your token is expired"
     else :
         return "Your token is expired"
 
