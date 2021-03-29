@@ -28,9 +28,12 @@ def codes():
                 cursor.close()
                 conn.close()
                 return jsonify(codes), 200
-
         if request.method == 'POST':
             data = request.get_json()
+            cursor.execute("SELECT name from code")
+            names= cursor.fetchall()
+            if(any(data['name'] in sublist for sublist in names)) :
+                return "Nom de code déja existant",406
             new_name = data['name']
             new_expiration_date = data['expiration_date']
             new_image = data['image']
