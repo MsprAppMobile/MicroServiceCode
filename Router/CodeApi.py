@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 import Database.connection as connection
 from Router.VerifToken import verifyToken
+from datetime import datetime
+from time import strftime
+import hashlib
 import qrcode
 import os
 import getpass
@@ -33,7 +36,7 @@ def codes():
             new_image = data['image']
             new_description = data['description']
             new_value = data['value']
-            new_identifiantQRCode = data['identifiant_QRCode']
+            new_identifiantQRCode = new_val = hashlib.md5(b"GoStyle").hexdigest()+";"+ datetime.now().strftime("%Y%m%d%H%M%S")
             new_is_unique = data['is_unique']
             new_category = data['category']
             sql = """INSERT INTO code (name,expiration_date,image,description,value,identifiant_QRCode,is_unique,category) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) """

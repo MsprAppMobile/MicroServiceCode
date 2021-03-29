@@ -21,8 +21,6 @@ def code_by_user(user_id) :
             return jsonify(list_codes),200
     else :
         return "Your token is expired"
-    else :
-        return "Your token is expired"
 
 @codelist_api.route('/list',methods=['POST'])
 def codelist():
